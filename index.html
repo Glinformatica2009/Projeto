@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Cisco</title>
+    <link rel="stylesheet" href="Style0.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <a href="22.html" class="sphere" target="_blank">
+        <h1 class="title">LET'S TEST YOUR KNOWLEDGE <p class="subtitle">CISCO</p></h1>
+    </a>
+        </div>
+    </div>
+
+    <script>
+        const sphere = document.querySelector('.sphere');
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            const { clientX, clientY, view } = event;
+            const { innerWidth, innerHeight } = view;
+            const x = (clientX / innerWidth) - 0.5;
+            const y = (clientY / innerHeight) - 0.5;
+            
+            mouseX = x * 40; // Controle da rotação no eixo X
+            mouseY = y * -40; // Controle da rotação no eixo Y
+
+            sphere.style.transform = `rotateX(${mouseY}deg) rotateY(${mouseX}deg)`;
+        });
+    </script>
+ 
+</body>
+</html>
