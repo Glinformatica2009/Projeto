@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question h2 {
+            margin-bottom: 10px;
+        }
+
+        .question input {
+            margin-right: 10px;
+        }
+
+        .result {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Question</h1>
+        <div id="quiz-container"></div>
+        <button onclick="submitQuiz()">Enviar</button>
+
+        <div id="result" class="result">
+            <h2>Seu Score: <span id="score"></span>%</h2>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+
+        // Carrega o arquivo JSON
+        fetch('perguntas.json')
+            .then(response => response.json())
+            .then(data => {
+                questions = data;
+                shuffle(questions);
+                displayQuestions();
+            });
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function displayQuestions() {
+    const quizContainer = document.getElementById('quiz-container');
+    const fragment = document.createDocumentFragment(); // Usar fragmento para evitar múltiplas renderizações
+
+    questions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+
+        // Criação otimizada de elementos
+        const questionTitle = document.createElement('h2');
+        questionTitle.textContent = `${index + 1}. ${q.question}`;
+        questionDiv.appendChild(questionTitle);
+
+        // Criando as opções de múltipla escolha dinamicamente
+        ['a', 'b', 'c', 'd'].forEach(option => {
+            const label = document.createElement('label');
+            const radioInput = document.createElement('input');
+            radioInput.type = 'radio';
+            radioInput.name = `q${index}`;
+            radioInput.value = option;
+
+            label.appendChild(radioInput);
+            label.append(` ${option}) ${q.options[option]}`);
+            questionDiv.appendChild(label);
+            questionDiv.appendChild(document.createElement('br')); // Quebra de linha
+        });
+
+        // Adiciona a pergunta e opções ao fragmento
+        fragment.appendChild(questionDiv);
+    });
+
+    // Inserimos tudo de uma vez no DOM
+    quizContainer.appendChild(fragment);
+}
+
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            let totalQuestions = questions.length;
+
+            questions.forEach((q, index) => {
+                const selectedAnswer = document.querySelector(`input[name="q${index}"]:checked`);
+                if (selectedAnswer && selectedAnswer.value === q.correct) {
+                    score++;
+                }
+            });
+
+            const percentageScore = (score / totalQuestions) * 100;
+            document.getElementById('score').innerText = percentageScore.toFixed(2);
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
